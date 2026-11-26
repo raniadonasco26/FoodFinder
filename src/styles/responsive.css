@@ -1,0 +1,233 @@
+/* ==========================================================================
+   FOOD FINDER — Responsive Breakpoints (responsive.css)
+   Desktop (1201px+), Laptop (769px–1200px), Tablet (481px–768px), Mobile (320px–480px)
+   ========================================================================== */
+
+/* Laptop: 769px – 1200px */
+@media (max-width: 1200px) {
+  .hero-grid {
+    gap: 36px;
+  }
+
+  .hero-float-top {
+    left: -10px;
+  }
+
+  .hero-float-bottom {
+    right: -10px;
+  }
+
+  .restaurants-grid,
+  .menu-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer-grid {
+    grid-template-columns: 1.3fr 1fr 1fr;
+  }
+}
+
+/* Tablet Landscape & Nav Collapse: <= 992px */
+@media (max-width: 992px) {
+  .nav-links,
+  .nav-actions {
+    display: none;
+  }
+
+  .mobile-menu-btn {
+    display: inline-flex;
+  }
+
+  .hero-grid,
+  .details-header-grid,
+  .auth-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-section {
+    padding: 40px 0 68px;
+  }
+
+  .hero-visual {
+    max-width: 560px;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .explore-filters-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .restaurant-card.list-mode {
+    flex-direction: column;
+  }
+
+  .restaurant-card.list-mode .restaurant-card-media {
+    width: 100%;
+    height: 220px;
+  }
+
+  .auth-visual-panel {
+    min-height: 280px;
+    padding: 36px 32px;
+  }
+
+  .auth-form-panel {
+    padding: 38px 32px;
+  }
+}
+
+/* Tablet Portrait: 481px – 768px */
+@media (max-width: 768px) {
+  :root {
+    --nav-height: 72px;
+  }
+
+  .section {
+    padding-block: 64px;
+  }
+
+  .search-bar-form {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .search-field-group + .search-field-group::before {
+    display: none;
+  }
+
+  .search-field-group {
+    background: var(--color-bg);
+  }
+
+  .search-bar-form .btn {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .explore-search-row {
+    grid-template-columns: 1fr;
+  }
+
+  .restaurants-grid,
+  .menu-grid,
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .details-specs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-editorial-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 26px;
+  }
+
+  .cta-card {
+    padding: 48px 26px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .hero-float-top,
+  .hero-float-bottom {
+    position: static;
+    margin-top: 12px;
+  }
+
+  .hero-image-frame {
+    aspect-ratio: 16 / 12;
+  }
+
+  .meal-estimator-bar {
+    flex-direction: column;
+    align-items: stretch;
+    bottom: 14px;
+    padding: 14px 18px;
+  }
+}
+
+/* Mobile: 320px – 480px */
+@media (max-width: 480px) {
+  .container {
+    padding-inline: 16px;
+  }
+
+  .section {
+    padding-block: 52px;
+  }
+
+  .hero-title {
+    font-size: 2.15rem;
+  }
+
+  .hero-metrics {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .categories-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .explore-controls-panel {
+    padding: 16px;
+  }
+
+  .explore-filters-row {
+    grid-template-columns: 1fr;
+  }
+
+  .restaurant-card-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .details-cta-row .btn {
+    width: 100%;
+  }
+
+  .auth-form-panel {
+    padding: 28px 20px;
+  }
+
+  .auth-visual-panel {
+    padding: 28px 20px;
+    min-height: 240px;
+  }
+
+  .demo-autofill-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mobile-drawer-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-card {
+    padding: 24px 18px;
+  }
+
+  .toast-notification {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+}

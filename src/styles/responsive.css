@@ -100,14 +100,6 @@
     gap: 6px;
   }
 
-  .search-field-group + .search-field-group::before {
-    display: none;
-  }
-
-  .search-field-group {
-    background: var(--color-bg);
-  }
-
   .search-bar-form .btn {
     width: 100%;
     margin-top: 4px;

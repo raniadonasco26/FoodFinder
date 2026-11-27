@@ -13,14 +13,13 @@ export default function Dashboard({ session, savedIds, onToggleSave, onLogout })
           <div>
             <span className="eyebrow">
               <ShieldCheck size={14} />
-              <span>Simulated Local Session Active</span>
+              <span>FoodFinder account</span>
             </span>
             <h1 className="section-title" style={{ marginBottom: '6px' }}>
               Welcome, <em>{session?.fullName}</em>
             </h1>
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.94rem' }}>
-              Signed in as <strong>{session?.email}</strong> · Stored locally in{' '}
-              <code>localStorage</code>
+              Signed in as <strong>{session?.email}</strong>
             </p>
           </div>
 

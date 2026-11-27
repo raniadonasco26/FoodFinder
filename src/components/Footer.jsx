@@ -40,6 +40,9 @@ export default function Footer() {
               <li>
                 <Link to="/register">Create Account</Link>
               </li>
+              <li>
+                <Link to="/owner">Restaurant owner portal</Link>
+              </li>
             </ul>
           </div>
 
@@ -88,8 +91,7 @@ export default function Footer() {
           <p style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
             <Info size={14} />
             <span>
-              Frontend Demonstration Only — Sample restaurant details, menus, prices, and
-              localStorage authentication.
+              Demo listings and sample menus are labeled. Cebu City map listings use OpenStreetMap.
             </span>
           </p>
         </div>

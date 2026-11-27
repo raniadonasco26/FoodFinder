@@ -23,7 +23,9 @@ import { filterMenuItems, formatPeso } from '../utils/filters';
 import ImageWithFallback from '../components/ImageWithFallback';
 import MenuCard from '../components/MenuCard';
 import DirectionsModal from '../components/DirectionsModal';
+import PublishedMenu from '../components/PublishedMenu';
 import { fetchOsmRestaurant, isOsmRestaurantId } from '../services/restaurantApi';
+import { fetchPublishedLocations, mergeRestaurantLocations, restaurantIdentity } from '../services/ownerMenus';
 import { isInCebuCity } from '../data/cebuCity';
 
 export default function RestaurantDetails({ savedIds, onToggleSave }) {
@@ -32,7 +34,8 @@ export default function RestaurantDetails({ savedIds, onToggleSave }) {
   const pageRef = useRef(null);
   const menuGridRef = useRef(null);
 
-  const isLive = isOsmRestaurantId(id);
+  const isOsm = isOsmRestaurantId(id);
+  const isLive = Boolean(restaurantIdentity(id));
   const fromMap = location.state?.osmRestaurant;
   const markerRestaurant = isLive && fromMap?.id === id && isInCebuCity(fromMap.lat, fromMap.lon)
     ? fromMap : null;
@@ -42,7 +45,6 @@ export default function RestaurantDetails({ savedIds, onToggleSave }) {
   const restaurant = isLive
     ? markerRestaurant || currentLookup?.restaurant
     : RESTAURANTS.find((item) => item.id === id);
-  const menuLink = isLive && (restaurant?.menuUrl || restaurant?.website);
 
   useEffect(() => {
     if (!isLive || markerRestaurant) return;
@@ -50,8 +52,14 @@ export default function RestaurantDetails({ savedIds, onToggleSave }) {
     const controller = new AbortController();
     const timer = setTimeout(async () => {
       try {
-        const restaurant = await fetchOsmRestaurant(id, controller.signal);
-        if (!controller.signal.aborted) setLookup({ id, attempt: lookupAttempt, restaurant });
+        const [osm, owned] = await Promise.allSettled([
+          isOsm ? fetchOsmRestaurant(id, controller.signal) : null,
+          fetchPublishedLocations(controller.signal, id),
+        ]);
+        if (controller.signal.aborted) return;
+        const [restaurant] = mergeRestaurantLocations(osm.value ? [osm.value] : [], owned.value ?? []);
+        const error = !restaurant && (isOsm ? osm.status === 'rejected' : owned.status === 'rejected');
+        setLookup({ id, attempt: lookupAttempt, restaurant, error });
       } catch {
         if (!controller.signal.aborted) setLookup({ id, attempt: lookupAttempt, error: true });
       }
@@ -61,7 +69,7 @@ export default function RestaurantDetails({ savedIds, onToggleSave }) {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [id, isLive, markerRestaurant, lookupAttempt]);
+  }, [id, isLive, isOsm, markerRestaurant, lookupAttempt]);
   const allMenuItems = useMemo(() => getMenuByRestaurantId(id), [id]);
 
   const [menuCategory, setMenuCategory] = useState('All');
@@ -156,8 +164,8 @@ export default function RestaurantDetails({ savedIds, onToggleSave }) {
             </h1>
             <p style={{ color: 'var(--color-text-muted)', marginBottom: '22px' }}>
               {isLive
-                ? currentLookup?.error ? 'The OpenStreetMap restaurant request failed.'
-                  : currentLookup ? 'No matching OpenStreetMap restaurant was found.' : 'Retrieving the OpenStreetMap profile.'
+                ? currentLookup?.error ? 'The restaurant request failed.'
+                  : currentLookup ? 'No matching restaurant was found.' : 'Retrieving the restaurant profile.'
                 : "We couldn't locate that demonstration restaurant profile."}
             </p>
             {currentLookup?.error && (
@@ -203,7 +211,7 @@ export default function RestaurantDetails({ savedIds, onToggleSave }) {
       <div className="demo-disclaimer-banner">
         <div className="container demo-disclaimer-inner">
           <Info size={15} />
-          {isLive ? <span>Restaurant information from OpenStreetMap</span> : (
+          {isLive ? <span>{restaurant.ownerLocation ? 'Location published by the restaurant owner' : 'Restaurant information from OpenStreetMap'}</span> : (
             <span>
               <strong>Demonstration Data:</strong> Restaurant details, opening hours, and
               Philippine Peso (₱) menu prices shown below are simulated samples, not
@@ -314,6 +322,7 @@ export default function RestaurantDetails({ savedIds, onToggleSave }) {
                 <a href="#menu" className="btn btn-primary">
                   <span>{isLive ? 'View Menu' : 'Explore Menu & Prices'}</span>
                 </a>
+                {isOsm && <Link to={`/owner?claim=${restaurant.id}`} className="btn btn-secondary">Claim this listing</Link>}
                 {!isLive && <>
                 <button
                   type="button"
@@ -362,15 +371,7 @@ export default function RestaurantDetails({ savedIds, onToggleSave }) {
           </div>
 
           {isLive ? (
-            <div className="empty-state-box">
-              {!restaurant.menuUrl && <p>Menu items are currently unavailable.</p>}
-              {menuLink && (
-                <a href={menuLink} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
-                  <ExternalLink size={16} />
-                  {restaurant.menuUrl ? 'Open restaurant menu' : 'Check restaurant website'}
-                </a>
-              )}
-            </div>
+            <PublishedMenu key={id} restaurant={restaurant} />
           ) : <>
           <div className="menu-controls-bar">
             <div className="menu-top-bar">

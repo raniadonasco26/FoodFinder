@@ -2,7 +2,7 @@ import { Sparkles, Plus, Check } from 'lucide-react';
 import ImageWithFallback from './ImageWithFallback';
 import { formatPeso } from '../utils/filters';
 
-export default function MenuCard({ item, isSelected = false, onToggleEstimate }) {
+export default function MenuCard({ item, isSelected = false, onToggleEstimate, ownerPublished = false }) {
   return (
     <article className="menu-card gsap-menu-card">
       <div className="menu-card-image">
@@ -26,7 +26,7 @@ export default function MenuCard({ item, isSelected = false, onToggleEstimate })
 
         <div className="menu-card-footer">
           <span style={{ fontSize: '0.77rem', color: 'var(--color-text-muted)' }}>
-            Sample Dine-In Price
+            {ownerPublished ? (item.available ? 'Available' : 'Currently unavailable') : 'Sample Dine-In Price'}
           </span>
           {onToggleEstimate && (
             <button

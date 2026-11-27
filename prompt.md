@@ -2,7 +2,7 @@
 
 ## PROJECT OBJECTIVE
 
-Develop the frontend of FoodFinder using React JS (JSX), focusing exclusively on discovering restaurants through an interactive map and viewing their available food menus.
+Develop FoodFinder using React JS (JSX) for restaurant discovery through an interactive map, viewing available food menus, and publishing menus through verified restaurant-owner accounts.
 
 The application must integrate OpenStreetMap, Overpass API, Leaflet, React Leaflet, and Axios to retrieve and display restaurant information.
 
@@ -35,7 +35,7 @@ Use the following technologies:
 - React Leaflet for integrating Leaflet into React.
 
 ### Menu Data
-- Use Supabase as the optional database for storing verified restaurant menu records.
+- Use Supabase Auth for restaurant-owner accounts and Supabase to store ownership claims and menu records.
 - For the initial frontend prototype, use structured sample menu data if necessary.
 - Never fabricate actual restaurant menus or prices and present them as verified information.
 
@@ -175,7 +175,7 @@ Use the following priority:
 
 1. Retrieve the restaurant's menu website using the OSM `website:menu` tag when available.
 2. Retrieve its regular website if a dedicated menu URL is unavailable.
-3. Retrieve verified menu records from Supabase when available.
+3. Retrieve verified, published menu records from Supabase when available.
 4. For the frontend prototype, use clearly identified sample menu records.
 5. If no verified menu is available, display "Menu currently unavailable."
 
@@ -195,6 +195,16 @@ Each menu record should have:
 - image_url
 
 Prices must use Philippine peso formatting (₱).
+
+### Restaurant Owner Accounts and Menu Publishing
+
+- Restaurant owners can register, sign in, and access an owner dashboard. Diners can browse restaurants and published menus without an owner account.
+- To claim a listing, an owner selects their existing Cebu City restaurant and submits evidence that they represent it. Identify the listing by its OpenStreetMap element type and ID.
+- A designated reviewer approves or rejects claims. Owners can see their claim status. A pending or rejected claim grants no menu editing or publishing access.
+- An approved owner can manage only the restaurant listings they are authorized to represent. Enforce ownership and reviewer permissions on the server or in Supabase access policies.
+- Approved owners can add, edit, and remove menu items, and update dish names, descriptions, categories, photos, prices in Philippine pesos, and availability.
+- Owners can save drafts, publish updates, and unpublish a menu. Drafts and ownership evidence are private. Public restaurant details retrieve only published menu items tied to that listing’s OpenStreetMap element type and ID.
+- If there is no published menu or other verified source, show “Menu currently unavailable.”
 
 ---
 
@@ -399,6 +409,7 @@ Deliver a functional FoodFinder frontend focused ONLY on:
 3. Restaurant markers and locations.
 4. Restaurant details.
 5. Restaurant menus.
+6. Restaurant-owner accounts, ownership verification, and menu publishing.
 
 The application must use React JS, Axios, OpenStreetMap, Overpass API, Leaflet, and React Leaflet.
 

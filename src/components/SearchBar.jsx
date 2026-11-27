@@ -32,9 +32,9 @@ export default function SearchBar({ initialQuery = '', initialLocation = 'All Lo
             </label>
             <input
               id="hero-food-search"
-              type="text"
+              type="search"
               className="search-field-input"
-              placeholder="Try 'Chicken Rice', 'Ramen', or 'Café'..."
+              placeholder="Try ramen or chicken rice"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -63,8 +63,8 @@ export default function SearchBar({ initialQuery = '', initialLocation = 'All Lo
         </div>
 
         <button type="submit" className="btn btn-primary btn-lg">
-          <span>Explore Restaurants</span>
-          <ArrowRight size={18} />
+          <span>Search</span>
+          <ArrowRight size={18} aria-hidden="true" />
         </button>
       </form>
     </div>

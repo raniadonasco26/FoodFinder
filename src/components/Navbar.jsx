@@ -11,7 +11,9 @@ import {
 } from 'lucide-react';
 import { gsap, prefersReducedMotion } from '../hooks/useGsapSetup';
 
-export default function Navbar({ session, savedCount, onLogout }) {
+export default function Navbar({ session, dashboardPath, savedCount, onLogout }) {
+  const ownerDashboard = dashboardPath === '/owner';
+  const savedPath = session && !ownerDashboard ? '/dashboard' : '/explore?saved=true';
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const navRef = useRef(null);
@@ -139,7 +141,7 @@ export default function Navbar({ session, savedCount, onLogout }) {
 
           <div className="nav-actions">
             <Link
-              to={session ? '/dashboard' : '/explore?saved=true'}
+              to={savedPath}
               className="saved-pill"
               title="Saved Restaurants"
             >
@@ -150,15 +152,15 @@ export default function Navbar({ session, savedCount, onLogout }) {
 
             {session ? (
               <>
-                <Link to="/dashboard" className="user-chip" title="Open Mock Dashboard">
+                <Link to={dashboardPath} className="user-chip" title={ownerDashboard ? 'Open owner dashboard' : 'Open dashboard'}>
                   <span className="user-avatar">{initials}</span>
-                  <span>{session.fullName.split(' ')[0]}</span>
+                  <span>{ownerDashboard ? 'Owner dashboard' : session.fullName.split(' ')[0]}</span>
                 </Link>
                 <button
                   type="button"
                   onClick={onLogout}
                   className="btn btn-outline btn-sm"
-                  aria-label="Log out of mock session"
+                  aria-label="Sign out"
                 >
                   <LogOut size={15} />
                   <span>Logout</span>
@@ -237,7 +239,7 @@ export default function Navbar({ session, savedCount, onLogout }) {
                 <ChevronRight size={18} />
               </a>
               <Link
-                to={session ? '/dashboard' : '/explore?saved=true'}
+                to={savedPath}
                 className="mobile-nav-link"
               >
                 <span>Saved Restaurants ({savedCount})</span>
@@ -247,9 +249,9 @@ export default function Navbar({ session, savedCount, onLogout }) {
 
             {session ? (
               <div className="mobile-drawer-actions">
-                <Link to="/dashboard" className="btn btn-secondary btn-full">
+                <Link to={dashboardPath} className="btn btn-secondary btn-full">
                   <User size={16} />
-                  <span>{session.fullName.split(' ')[0]}&apos;s Hub</span>
+                  <span>{ownerDashboard ? 'Owner dashboard' : `${session.fullName.split(' ')[0]}'s Hub`}</span>
                 </Link>
                 <button
                   type="button"

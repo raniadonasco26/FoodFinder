@@ -28,9 +28,7 @@ export default function Explore({ savedIds, onToggleSave }) {
   const [selectedCategory, setSelectedCategory] = useState(
     () => searchParams.get('category') || 'All'
   );
-  const [selectedLocation, setSelectedLocation] = useState(
-    () => searchParams.get('location') || 'All Locations'
-  );
+  const selectedLocation = LOCATIONS[0];
   const [maxDistance, setMaxDistance] = useState('any');
   const [budget, setBudget] = useState(() => searchParams.get('budget') || 'any');
   const [sortBy, setSortBy] = useState('featured');
@@ -52,7 +50,6 @@ export default function Explore({ savedIds, onToggleSave }) {
     const qParam = searchParams.get('q');
     const foodParam = searchParams.get('food');
     const catParam = searchParams.get('category');
-    const locParam = searchParams.get('location');
     const budgetParam = searchParams.get('budget');
     const savedParam = searchParams.get('saved');
 
@@ -72,7 +69,6 @@ export default function Explore({ savedIds, onToggleSave }) {
     }
     if (foodParam !== null) setFoodQuery(foodParam);
     if (catParam !== null) setSelectedCategory(catParam);
-    if (locParam !== null) setSelectedLocation(locParam);
     if (budgetParam !== null) setBudget(budgetParam);
     if (savedParam !== null) setOnlySaved(savedParam === 'true');
   }, [searchParams]);
@@ -156,7 +152,6 @@ export default function Explore({ savedIds, onToggleSave }) {
     restaurantQuery.trim() !== '' ||
     foodQuery.trim() !== '' ||
     selectedCategory !== 'All' ||
-    selectedLocation !== 'All Locations' ||
     maxDistance !== 'any' ||
     budget !== 'any' ||
     onlySaved;
@@ -165,7 +160,6 @@ export default function Explore({ savedIds, onToggleSave }) {
     setRestaurantQuery('');
     setFoodQuery('');
     setSelectedCategory('All');
-    setSelectedLocation('All Locations');
     setMaxDistance('any');
     setBudget('any');
     setSortBy('featured');
@@ -177,7 +171,7 @@ export default function Explore({ savedIds, onToggleSave }) {
     <div ref={pageRef} className="explore-page">
       <header className="page-hero-compact">
         <div className="container gsap-explore-header">
-          <h1 className="section-title">Explore <em>restaurants</em></h1>
+          <h1 className="section-title">Explore restaurants <em>by category</em></h1>
           <p className="section-subtitle">
             Browse menus and prices, or find places to eat on the Cebu City map.
           </p>
@@ -199,6 +193,43 @@ export default function Explore({ savedIds, onToggleSave }) {
       )}
 
       <section className="container explore-content" aria-label="Browse restaurants" hidden={exploreView !== 'restaurants'}>
+        <h2 className="editorial-serif">Browse by category</h2>
+        <div className="category-pills-bar" role="group" aria-label="Food categories">
+          <button
+            type="button"
+            className={`filter-pill ${
+              selectedCategory === 'All' && !onlySaved ? 'active' : ''
+            }`}
+            onClick={() => {
+              setSelectedCategory('All');
+              setOnlySaved(false);
+            }}
+          >
+            All Restaurants
+          </button>
+
+          <button
+            type="button"
+            className={`filter-pill ${onlySaved ? 'active' : ''}`}
+            onClick={() => setOnlySaved((prev) => !prev)}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+          >
+            <Heart size={14} fill={onlySaved ? 'currentColor' : 'none'} />
+            <span>Saved ({savedIds.length})</span>
+          </button>
+
+          {FOOD_CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              type="button"
+              className={`filter-pill ${selectedCategory === cat.id ? 'active' : ''}`}
+              aria-pressed={selectedCategory === cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
         <div className="explore-controls-panel">
           <div className="explore-search-row">
             <div>
@@ -283,7 +314,6 @@ export default function Explore({ savedIds, onToggleSave }) {
                 id="filter-location"
                 className="select-control"
                 value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
               >
                 {LOCATIONS.map((loc) => (
                   <option key={loc} value={loc}>
@@ -343,42 +373,6 @@ export default function Explore({ savedIds, onToggleSave }) {
           </div>
         </div>
 
-        {/* CATEGORY FILTER PILLS */}
-        <div className="category-pills-bar" role="group" aria-label="Food categories">
-          <button
-            type="button"
-            className={`filter-pill ${
-              selectedCategory === 'All' && !onlySaved ? 'active' : ''
-            }`}
-            onClick={() => {
-              setSelectedCategory('All');
-              setOnlySaved(false);
-            }}
-          >
-            All Restaurants
-          </button>
-
-          <button
-            type="button"
-            className={`filter-pill ${onlySaved ? 'active' : ''}`}
-            onClick={() => setOnlySaved((prev) => !prev)}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-          >
-            <Heart size={14} fill={onlySaved ? 'currentColor' : 'none'} />
-            <span>Saved ({savedIds.length})</span>
-          </button>
-
-          {FOOD_CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              className={`filter-pill ${selectedCategory === cat.id ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat.id)}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
         <div className="results-toolbar">
           <p className="results-count-text">
             Showing <strong>{filteredRestaurants.length}</strong> of{' '}

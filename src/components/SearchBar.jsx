@@ -3,9 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, ArrowRight } from 'lucide-react';
 import { LOCATIONS } from '../data/restaurants';
 
-export default function SearchBar({ initialQuery = '', initialLocation = 'All Locations' }) {
+export default function SearchBar({ initialQuery = '' }) {
   const [query, setQuery] = useState(initialQuery);
-  const [selectedLocation, setSelectedLocation] = useState(initialLocation);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -14,9 +13,7 @@ export default function SearchBar({ initialQuery = '', initialLocation = 'All Lo
     if (query.trim()) {
       params.set('q', query.trim());
     }
-    if (selectedLocation && selectedLocation !== 'All Locations') {
-      params.set('location', selectedLocation);
-    }
+    params.set('location', LOCATIONS[0]);
     const qs = params.toString();
     navigate(qs ? `/explore?${qs}` : '/explore');
   };
@@ -50,8 +47,6 @@ export default function SearchBar({ initialQuery = '', initialLocation = 'All Lo
             <select
               id="hero-location-select"
               className="search-field-select"
-              value={selectedLocation}
-              onChange={(e) => setSelectedLocation(e.target.value)}
             >
               {LOCATIONS.map((loc) => (
                 <option key={loc} value={loc}>

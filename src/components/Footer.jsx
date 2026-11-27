@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { UtensilsCrossed, MapPin, Mail, Phone, Info } from 'lucide-react';
+import { UtensilsCrossed, MapPin, Mail, Info } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -68,19 +68,15 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="footer-heading">Contact Placeholder</h3>
+            <h3 className="footer-heading">Contact</h3>
             <ul className="footer-contact-list">
               <li className="footer-contact-item">
                 <MapPin size={17} />
-                <span>Salcedo Village, Makati City, Metro Manila (Demo Office)</span>
+                <span>Cebu City only</span>
               </li>
               <li className="footer-contact-item">
                 <Mail size={17} />
-                <span>concierge@foodfinder.example</span>
-              </li>
-              <li className="footer-contact-item">
-                <Phone size={17} />
-                <span>+63 (02) 8555-0192 (Placeholder)</span>
+                <a href="mailto:raniadonasco26@gmail.com">raniadonasco26@gmail.com</a>
               </li>
             </ul>
           </div>

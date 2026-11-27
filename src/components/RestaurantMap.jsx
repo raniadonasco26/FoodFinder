@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Hand, LocateFixed } from 'lucide-react';
 import { icon } from 'leaflet';
@@ -64,13 +64,16 @@ const RestaurantPin = memo(function RestaurantPin({ restaurant }) {
   );
 });
 
-const RestaurantMarkers = memo(function RestaurantMarkers({ restaurants }) {
-  const map = useMap();
-  const [bounds, setBounds] = useState(() => map.getBounds());
-  useMapEvent('moveend', () => setBounds(map.getBounds()));
+function MapBounds({ onChange }) {
+  const map = useMapEvent('moveend', () => onChange(map.getBounds()));
+  useEffect(() => {
+    onChange(map.getBounds());
+  }, [map, onChange]);
+  return null;
+}
 
-  if (!restaurants) return null;
-
+function restaurantsInView(restaurants, bounds) {
+  if (!restaurants || !bounds) return [];
   const visible = restaurants.filter(({ lat, lon }) => bounds.contains([lat, lon]));
   if (visible.length > MAX_RESTAURANT_PINS) {
     const center = bounds.getCenter();
@@ -80,13 +83,13 @@ const RestaurantMarkers = memo(function RestaurantMarkers({ restaurants }) {
     visible.sort((first, second) => distanceSquared(first) - distanceSquared(second));
   }
 
-  return visible.slice(0, MAX_RESTAURANT_PINS).map(restaurant => (
-    <RestaurantPin key={restaurant.id} restaurant={restaurant} />
-  ));
-});
+  return visible.slice(0, MAX_RESTAURANT_PINS);
+}
 
 export default function RestaurantMap() {
   const [result, setResult] = useState(null);
+  const [bounds, setBounds] = useState(null);
+  const visible = useMemo(() => restaurantsInView(result?.restaurants, bounds), [result, bounds]);
   const [attempt, setAttempt] = useState(0);
   const [userLocation, setUserLocation] = useState(null);
   const [locating, setLocating] = useState(false);
@@ -188,7 +191,8 @@ export default function RestaurantMap() {
             </CircleMarker>
           </Pane>
         )}
-        <RestaurantMarkers restaurants={result?.restaurants} />
+        <MapBounds onChange={setBounds} />
+        {visible.map(restaurant => <RestaurantPin key={restaurant.id} restaurant={restaurant} />)}
       </MapContainer>
       <div className="results-count-text" style={{ marginTop: '8px' }}>
         {result?.error ? (
@@ -211,6 +215,25 @@ export default function RestaurantMap() {
           </p>
         )}
       </div>
+      {result?.restaurants && bounds && (
+        <section className="map-listings">
+          <h3 className="editorial-serif">Restaurants in this view ({visible.length})</h3>
+          {visible.length ? (
+            <ul>
+              {visible.map(restaurant => (
+                <li key={restaurant.id}>
+                  <Link to={'/restaurant/' + restaurant.id} state={{ osmRestaurant: restaurant }}>
+                    {restaurant.name}
+                  </Link>
+                  {(restaurant.cuisine || restaurant.address) && (
+                    <small>{[restaurant.cuisine, restaurant.address].filter(Boolean).join(' · ')}</small>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : <p>No pins in this view. Zoom out or pan to find restaurants.</p>}
+        </section>
+      )}
     </section>
   );
 }

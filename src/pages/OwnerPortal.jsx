@@ -16,6 +16,7 @@ function OwnerSignIn() {
 
   async function submit(event) {
     event.preventDefault();
+    if (busy) return;
     const fields = new FormData(event.currentTarget);
     const credentials = { email: fields.get('email').trim(), password: fields.get('password') };
     setBusy(true);
@@ -42,7 +43,7 @@ function OwnerSignIn() {
       <label>Email<input name="email" type="email" autoComplete="email" required /></label>
       <label>Password<input name="password" type="password" minLength={registering ? 8 : undefined}
         autoComplete={registering ? 'new-password' : 'current-password'} required /></label>
-      {status && <p role="status">{status}</p>}
+      <div role="status">{busy ? (registering ? 'Creating your account…' : 'Signing in…') : status}</div>
       {error && <p role="alert">{error}</p>}
       <div className="owner-actions">
         <button className="btn btn-primary" disabled={busy}>{registering ? 'Create account' : 'Sign in'}</button>

@@ -17,16 +17,20 @@ export default function AccountForm({ mode, session, dashboardPath = '/dashboard
 
   async function submit(event) {
     event.preventDefault();
+    if (busy) return;
+    const guest = event.nativeEvent.submitter?.value === 'guest';
     const form = new FormData(event.currentTarget);
     const email = form.get('email')?.trim();
     const password = form.get('password');
     const origin = window.location.origin;
     setBusy(true);
     setError('');
-    setStatus('');
+    setStatus(guest ? 'Signing in as a guest…' : registering ? 'Creating your account…' : recovering ? 'Sending reset link…' : resetting ? 'Saving password…' : 'Signing in…');
     try {
       let response;
-      if (registering) {
+      if (guest) {
+        response = await supabase.auth.signInAnonymously();
+      } else if (registering) {
         const fullName = form.get('fullName').trim();
         if (!fullName) throw new Error('Enter your name.');
         response = await supabase.auth.signUp({
@@ -39,11 +43,13 @@ export default function AccountForm({ mode, session, dashboardPath = '/dashboard
       } else {
         response = await supabase.auth.signInWithPassword({ email, password });
       }
+      setStatus('');
       if (response.error) throw response.error;
       if (recovering) setStatus('If an account exists for that email, you’ll receive a reset link.');
       else if (registering && !response.data.session) setStatus('Check your email to confirm your account.');
       else if (resetting) navigate(dashboardPath, { replace: true });
     } catch (failure) {
+      setStatus('');
       setError(authErrorMessage(failure));
     } finally {
       setBusy(false);
@@ -68,10 +74,16 @@ export default function AccountForm({ mode, session, dashboardPath = '/dashboard
                 minLength={registering || resetting ? 8 : undefined}
                 autoComplete={registering || resetting ? 'new-password' : 'current-password'} required /></label>}
               {error && <p role="alert">{error}</p>}
-              {status && <p role="status">{status}</p>}
+              <div role="status">{status}</div>
               <button type="submit" className="btn btn-primary" disabled={busy}>
                 {registering ? 'Create account' : recovering ? 'Send reset link' : resetting ? 'Save password' : 'Sign in'}
               </button>
+              {(mode === 'login' || registering) && <>
+                <button type="submit" value="guest" formNoValidate className="btn" disabled={busy || session === undefined}>
+                  Continue as guest
+                </button>
+                <small>Signing out or clearing browser data ends access to this guest account.</small>
+              </>}
             </form>}
       <div className="owner-actions">
         {mode === 'login' ? <>

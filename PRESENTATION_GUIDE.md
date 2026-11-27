@@ -130,6 +130,22 @@ Use an already-approved test listing to demonstrate the editor. Point out the di
 | 5 | Show the location editor and save a prepared menu item as a draft on a test listing. | Highlight Cebu City coordinates, category, peso price, and availability. |
 | 6 | Select **Publish menu**, then reload that listing in the diner tab. | The saved dish appears in the public menu. Publish only information you have permission to share. |
 
+## Presentation environment variables
+
+The three browser settings below are ready to copy from `.env.example`. For a local demo, put them in `.env.local` and restart Vite. For a hosted demo, use the same names and values in Netlify’s production build environment and redeploy.
+
+| Variable | Purpose during the demo |
+| --- | --- |
+| `VITE_SUPABASE_URL` | Connects account sign-in, owner claims, and published menus to the FoodFinder project. |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Identifies the browser client to Supabase. Owner and reviewer permissions come from the signed-in account and database rules. |
+| `VITE_OVERPASS_URL` | Supplies the OpenStreetMap restaurant data used by the map and its visible restaurant list. Optional when using the default endpoint shown below. |
+
+```dotenv
+VITE_SUPABASE_URL=https://wboqapkbseuwctqjjill.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_B39j0ZWHeY_SHpA5JzEvlg_42w4gi-k
+VITE_OVERPASS_URL=https://ovp.dresel.systems/api-as/interpreter
+```
+
 ## Before presenting
 
 - Run `npm run dev` and open `http://localhost:5173/`.

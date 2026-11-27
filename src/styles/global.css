@@ -2437,3 +2437,18 @@ h4,
   font-size: 0.83rem;
   color: rgba(250, 248, 255, 0.56);
 }
+
+.map-listings { margin-top: 1rem; }
+.map-listings ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 0 1rem;
+  max-height: 22rem;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0 .5rem 0 0;
+  margin-top: .5rem;
+}
+.map-listings li { padding: .75rem .25rem; border-top: 1px solid var(--color-lavender-light); overflow-wrap: anywhere; }
+.map-listings a { color: var(--color-primary-deep); font-weight: 600; }
+.map-listings small { display: block; margin-top: .25rem; }

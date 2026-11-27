@@ -1,7 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
-const url = import.meta.env.VITE_SUPABASE_URL;
-const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const configuredUrl = import.meta.env.VITE_SUPABASE_URL?.trim();
+const projectUrl = 'https://wboqapkbseuwctqjjill.supabase.co';
+const url = configuredUrl || projectUrl;
+const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim() ||
+  (url === projectUrl ? 'sb_publishable_B39j0ZWHeY_SHpA5JzEvlg_42w4gi-k' : undefined);
 export const supabase = url && key ? createClient(url, key) : null;
 
 export function restaurantIdentity(id) {

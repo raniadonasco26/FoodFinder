@@ -121,15 +121,8 @@ export default function Navbar({ session, dashboardPath, savedCount, onLogout })
                   : ''
               }`}
             >
-              Explore Restaurants
+              Restaurants &amp; Categories
             </Link>
-            <a
-              href="/#categories"
-              onClick={(e) => handleSectionLink(e, 'categories')}
-              className={`nav-link ${location.hash === '#categories' ? 'active' : ''}`}
-            >
-              Categories
-            </a>
             <a
               href="/#about"
               onClick={(e) => handleSectionLink(e, 'about')}
@@ -219,17 +212,9 @@ export default function Navbar({ session, dashboardPath, savedCount, onLogout })
                   location.pathname.startsWith('/explore') ? 'active' : ''
                 }`}
               >
-                <span>Explore Restaurants</span>
+                <span>Restaurants &amp; Categories</span>
                 <ChevronRight size={18} />
               </Link>
-              <a
-                href="/#categories"
-                onClick={(e) => handleSectionLink(e, 'categories')}
-                className="mobile-nav-link"
-              >
-                <span>Categories</span>
-                <ChevronRight size={18} />
-              </a>
               <a
                 href="/#about"
                 onClick={(e) => handleSectionLink(e, 'about')}
